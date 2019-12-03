@@ -1,0 +1,216 @@
+<div class="footer container ff">
+  <div class="row e">
+    <div class="col-md-3 f">
+      <span class="d">info@reeslevcph.dk</span>
+    </div>
+    <div class="col-md-2 c">
+      <span>About</span><br>
+      <span>Gavekort</span>
+    </div>
+    <div class="col-md-2 c">
+      <span>Support</span><br>
+      <span>FAQ</span><br>
+      <span>Guarantees</span>
+    </div>
+    <div class="col-md-5 newsletter-1">
+      {% if section.settings.footer_linklist_1 != blank %}
+      <ul class="footer_menu">
+        {% for link in linklists[section.settings.footer_linklist_1].links %}
+        <li>
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        </li>
+        {% for sub_link in link.links %}
+        <li>
+          <a href="{{ sub_link.url }}">{{ sub_link.title }}</a>
+        </li>
+        {% for sub_sub_link in sub_link.links %}
+        <li>
+          <a href="{{ sub_sub_link.url }}">{{ sub_sub_link.title }}</a>
+        </li>
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% if section.settings.footer_newsletter %}
+      {% if section.settings.richtext != blank %}
+      {{ section.settings.richtext }}
+      {% endif %}
+      {% include 'newsletter' %}
+      {% endif %}
+
+      {% if section.settings.footer_content_right != blank %}
+      {{ section.settings.footer_content_right }}
+      {% endif %}
+
+      {{ section.settings.custom_html }}
+
+
+
+      {% if section.settings.display_payment_methods %}
+      <div class="payment_methods">
+        {% for type in shop.enabled_payment_types %}
+        {{ type | payment_type_svg_tag: class:'payment-icon' }}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<div class="mainfooter container ff"><span class="a">Reeslev</span><br><span class="b">Håndlavede smykker</span></div>
+<style>
+  .ff{
+    padding:30px 0px !important;
+  }
+  .f{
+    line-height: 2.5em;
+  }
+  .e{
+    margin: 50px 40px 50px 90px;
+  }
+  .d{
+    font-family: Avenir-Medium, Avenir;
+    font-size: 22px;
+    font-weight: 400;
+    color: rgb(0, 0, 0);
+    text-decoration: underline;
+  }
+  .c{
+    line-height: 2.5em;
+    font-family: Avenir-Medium, Avenir;
+    font-size: 18px;
+    font-weight: 400;
+    color: rgb(0, 0, 0);
+  }
+  .b{
+    width: 100vw;
+    font-family: Caveat-Regular, Caveat;
+    font-size: 25px;
+    font-weight: normal;
+    color: #2d2d2c;
+  }
+  .a{
+    width: 100vw;
+    font-family: BigCaslon-Medium, "Big Caslon";
+    font-size: 40px;
+    font-weight: 400;
+    color: #2d2d2c;
+  }
+  .icon1{
+    padding-left: 3vw;
+    font-size:30px
+  }
+  .newsletter-1{
+    padding-left: 10vw;
+  }
+  .mainfooter{
+    height: 150px;
+    background: #cd9f84;
+    text-align: center;
+  }
+  @media only screen and (min-width:300px) and (max-width: 767px) {
+    .newsletter-1{
+      width: 100vw !important;
+      padding-top: 15vw;
+      padding-left: 0vw;
+    }
+    .icon1{
+      padding-left: 3vw;
+      font-size:30px
+    }
+    .mainfooter{
+      padding-top: 70px !important;
+      height: 170px;
+    }
+    .footer{
+      height: 485px;
+    }
+    .b{
+      display: none;
+    }
+    .c{
+      padding-left: 30px;
+      width: 46vw !important;
+    }
+    .e{
+      margin: 10px;
+    }
+    .f{
+      margin-bottom: 20px !important;
+      text-align: center;
+      width: 100vw;
+    }
+  }
+</style>
+{% schema %}
+{
+  "name": "Footer",
+  "class": "footer-template-section",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "footer_linklist_1",
+      "label": "Menu",
+      "info": "This menu won't show drop-down items"
+    },
+    {
+      "type": "richtext",
+      "id": "richtext",
+      "label": "Text",
+      "default": "<p>Sign up to get the latest on sales, new releases and more…</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "footer_newsletter",
+      "label": "Show newsletter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "footer_social_icons",
+      "label": "Show social media icons",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text"
+    },
+    {
+      "type": "checkbox",
+      "id": "display_designed_by",
+      "label": "Show theme designer credits",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "display_payment_methods",
+      "label": "Show payment method icons",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "footer_content_left",
+      "label": "Left column text"
+    },
+    {
+      "type": "richtext",
+      "id": "footer_content_right",
+      "label": "Right column text"
+    },
+    {
+      "type": "header",
+      "content": "Scripts"
+    },
+    {
+      "type": "html",
+      "id": "custom_html",
+      "label": "Custom HTML"
+    }
+  ]
+}
+{% endschema %}

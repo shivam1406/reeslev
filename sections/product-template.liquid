@@ -1,0 +1,390 @@
+<!-- /shashank css 27 november  --> 
+<style>
+.sidenav {
+  padding-top: 0px !important;}
+</style>
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  {% include 'product-form' with 'product' %}
+</div>
+<div class="container main content main-wrapper">
+  <div class="row main11">
+      {% assign first = true %}
+      {% assign featured_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+      {% for image in product.images limit:3 %}
+      {% if image.alt contains 'vimeo' %}
+      {% assign src = image.alt | split: 'src="' %}
+      {% else %}
+   <div class="col-md-5 col-xs-12 col11 sizech">
+     <div class="margin11">
+        <img class="image11" src="{{ image | product_img_url: '' }}"/>
+      </div>
+    </div>
+     {%if first == true %}
+    <div class="col-md-5 col-xs-12 col12">
+      <div class="row row11">
+        <div class="row col-md-12">
+          <div class="col-md-10 padding1display:none; */1">
+            <div class="row text11">{{ product.title }}</div>
+          </div>
+          <div class="col-md-2 padding11">
+            {% assign variant = product.selected_or_first_available_variant %}
+            {% if settings.enable_shopify_product_badges %}
+            <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+            {% endif %}
+            {% unless collection_handles contains 'coming-soon' %}
+            <p class="modal_price text12" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+              <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
+              <meta itemprop="seller" content="{{ shop.name | escape }}" />
+              <link itemprop="availability" href="http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}">
+              <meta itemprop="itemCondition" itemtype="http://schema.org/OfferItemCondition" content="http://schema.org/NewCondition"/>
+
+              <span class="sold_out">{% if variant.available == false %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+              <span itemprop="price" content="{{ variant.price | money_without_currency | remove: "," }}" class="{% if variant.compare_at_price > variant.price %}sale{% endif %}">
+                <span class="current_price {% if product.available == false %}hidden{% endif %}">
+                  {% if variant.price > 0 %}
+                  <span class="money">{{ variant.price | money }}</span>
+                  {% else %}
+                  {{ settings.free_price_text }}
+                  {% endif %}
+                </span>
+              </span>
+              <span class="was_price">
+                {% if variant.price < variant.compare_at_price and variant.available %}
+                <span class="money">{{ variant.compare_at_price | money }}</span>
+                {% endif %}
+              </span>
+            </p>
+            {% endunless %}
+          </div>
+        </div>
+        <div class="col-md-10 padding11">
+          <div class="row">
+            <button class="text15" onclick="openNav()">Design & Bestil</button>
+          </div>
+          <div class="row">
+            {% if section.settings.product_description_position == "top" %}
+            {% if product.description != blank %}
+            <div class="description" itemprop="description">
+              {{ product.description | split: '<!-- split -->' | first }}
+            </div>
+            {% endif %}
+            {% endif %}
+          </div>
+          <div class="row">
+            <a href"">Hvordan bestiller jeg?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% assign first = false %}
+    {% endif %}
+     {% endif %}
+      {% endfor %}
+    </div>
+  <div id="rap__med__instagram"></div>
+<script async src="https://theraptormedia.com/instagram/embed.js" data-id="reeslev.myshopify.com" defer="defer"></script>
+    
+    
+    
+ 
+     
+
+<style>
+  {% if section.settings.set_product_height %}
+    .product_slider .slides img { max-width: {{ section.settings.product_height }}px; }
+  {% endif %}
+  .footer{
+    display: none;
+  }
+  .text15{
+  	padding: 15px 95px; border-radius: 0px; font-family: BigCaslon-Medium, 'Big Caslon'; font-size: 25px; font-weight: 400; color: rgb(255, 255, 255); text-transform: none;
+  }
+  .text14{
+  	padding-top: 60px; margin: 0px; text-decoration: underline; font-family: Avenir-MediumOblique, Avenir; font-size: 18px; font-style: italic; font-weight: 500; color: rgb(0, 0, 0);
+  }
+  .text13{
+  	margin: 0px; font-family: BigCaslon-Medium, 'Big Caslon'; font-size: 19px; font-weight: 400; color: rgb(45, 45, 45);
+  }
+  .text12{
+  	line-height: 31px; font-family: Avenir-Medium, Avenir; font-size: 26px; font-weight: 400; color: rgb(0, 0, 0);
+  }
+  .text11{
+    margin: 0px;
+    text-transform: none;
+    font-family: BigCaslon-Medium, 'Big Caslon';
+    font-size: 30px;
+    font-weight: 400;
+    color: rgb(0, 0, 0);
+  }
+  .padding11{
+  	padding: 0px;
+  }
+  .image11{
+  	width:100%;
+  }
+  .margin11{
+  	margin:5px;
+  }
+  .row12{
+  	margin: 0px; padding: 40px 0px;
+  }
+  .row11{
+  	margin: 5px; background: #cd9f84; padding: 40px 30px;
+  }
+  .col12{
+  	padding-left: 0px; padding-right: 0px; display:flex; flex-wrap:wrap;
+  }
+  .col11{
+  	padding-left: 0px; padding-right: 0px;
+  }
+  .main11{
+  	margin: 0px;
+  }
+  .content{
+    padding: 20px 40px !important;
+  }
+  .sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+  }
+
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+
+  .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+  }
+
+  @media only screen and (min-width:300px) and (max-width: 767px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
+</style>
+  <script>
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "40vw";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+    $(".action_button").click(function () {
+      $("#mySidenav").css("width", "0");
+    });
+    $(document).ready(function(){
+      $(".sizech:nth-child(1)").addClass("col-md-7");
+      $(".sizech:nth-child(4)").addClass("col-md-7");
+    });
+    
+    $(document).ready(function(){
+      $(".image11").css({"height":"500px"});
+    });
+  </script>
+
+{% schema %}
+{
+  "name": "Product",
+  "class": "product-template-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "product_breadcrumb",
+      "label": "Show breadcrumb links"
+    },
+    {
+      "type": "checkbox",
+      "id": "display_tags",
+      "label": "Show tags"
+    },
+    {
+      "type": "checkbox",
+      "id": "display_type",
+      "label": "Show type"
+    },
+    {
+      "type": "checkbox",
+      "id": "display_vendor",
+      "label": "Show vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "display_sku",
+      "label": "Show SKU"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_button",
+      "label": "Show dynamic checkout button",
+      "default": true,
+      "info": "Each customer will see their preferred payment method from those available on your store, such as PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
+    },
+    {
+      "type": "checkbox",
+      "id": "display_social_buttons",
+      "label": "Show social media share icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "display_collections",
+      "label": "Show collections"
+    },
+    {
+      "type": "checkbox",
+      "id": "display_related_products",
+      "label": "Show related products ([?](https:\/\/help.outofthesandbox.com\/hc\/en-us\/articles\/115006909487-Related-Products))",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "label": "Related products per row",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "radio",
+      "id": "product_description_position",
+      "label": "Description position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Above 'add to cart'"
+        },
+        {
+          "value": "bottom",
+          "label": "Below 'add to cart'"
+        }
+      ]
+    },
+    {
+      "type": "radio",
+      "id": "product_images_position",
+      "label": "Images position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "set_product_height",
+      "label": "Set height of product images"
+    },
+    {
+      "type": "range",
+      "id": "product_height",
+      "label": "Product image height",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "default": 500,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "paragraph",
+      "content": "Create a sidebar by adding content blocks."
+    },
+    {
+      "type": "checkbox",
+      "id": "toggle",
+      "label": "Toggle sidebar content",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "filter_by_tag",
+      "name": "Tag list",
+      "limit": 1
+    },
+    {
+      "type": "filter_by_collection",
+      "name": "Collection list",
+      "limit": 1
+    },
+    {
+      "type": "filter_by_type",
+      "name": "Type list",
+      "limit": 1
+    },
+    {
+      "type": "filter_by_vendor",
+      "name": "Vendor list",
+      "limit": 1
+    },
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "custom_menu_linklist",
+          "label": "Menu"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Text area can be used for special announcements or general information.</p>"
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "name": "Page",
+      "settings": [
+        {
+          "type": "page",
+          "id": "content_page",
+          "label": "Page"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

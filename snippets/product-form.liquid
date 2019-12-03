@@ -1,0 +1,278 @@
+<!-- /shashank css 27 november  --> 
+<style>
+  .navbar-price{background-color: rgb(250, 246, 244);}
+  .navbar-under-price{padding: 55px 20px 30px 30px;}
+  .money-color{
+    font-family: Avenir-Heavy, Avenir;
+    font-size: 22px;
+    font-weight: 600;
+    color: rgb(205, 159, 132);
+  }
+  .purchase-details__buttons{margin-top:0px;}
+  .button-width{
+    max-width:100% !important;
+    border: none !important;
+    border-radius: unset;
+    background-color: rgb(205, 159, 132) !important;
+    padding: 20px 0px 20px 0px !important;
+    color: white !important;
+  }
+  .add-to-cart{
+    font-family: Avenir-Medium, Avenir;
+    font-size: 18px;
+    font-weight: 400;
+    color: rgb(255, 255, 255);
+    text-transform: none;
+  }
+  .production-time{
+    text-align: center;
+    margin-top: 10px;
+    font-family: Avenir-MediumOblique, Avenir;
+    font-size: 13px;
+    font-style: italic;
+    font-weight: 500;
+    color: rgb(0, 0, 0);
+    text-decoration: underline;
+  }
+  .addtocart-bottom{
+    padding:0px 30px;
+  }
+  label{
+    text-align: center;
+  }
+  .lav-din{
+    font-family: Avenir-Light, Avenir;
+    font-size: 13px;
+    font-weight: 300;
+    color: rgb(0, 0, 0);
+    text-align:center;
+    padding:20px;
+  }
+  .colors ul{list-style:none; padding:0; margin: 0;}
+
+  .colors li{margin: 0 20px 0 0; display: inline-block;}
+
+  .colors label{cursor: pointer;}
+
+  .colors input{display:none;}
+
+  .colors input[type="radio"]:checked + .swatch{box-shadow: inset 0 0 0 2px white;}
+
+  .swatch1{
+    display:inline-block;
+    vertical-align: middle;
+    height: 50px;
+    width: 50px;
+    border-radius:25px;
+    margin: 0 5px 0 0 ;
+    border: 1px solid #d4d4d4;
+  }
+  input[type=radio]{
+    border: 0px;
+    margin: 10px;
+    height: 1.2em;
+  }
+</style>
+
+
+{% if product.available %}
+
+  {% if section.settings.show_payment_button %}
+    {% assign show_payment_button = true %}
+  {% elsif show_payment_button_quickshop %}
+    {% assign show_payment_button = true %}
+  {% else %}
+    {% assign show_payment_button = false %}
+  {% endif %}
+
+  {% assign variant = product.selected_or_first_available_variant %}
+
+
+  <div class="clearfix product_form init
+        {% if product.variants.size > 1 or product.options.size > 1 %}product_form_options{% endif %}"
+        id="product-form-{{ product.id }}{{ section.id }}{{ block.id }}"
+        data-money-format="{{ shop.money_format }}"
+        data-shop-currency="{{ shop.currency }}"
+        data-select-id="product-select-{{ product.id }}{{ product-form }}{{ section.id }}{{ block.id }}"
+        data-enable-state="{% if template contains 'product' %}true{% else %}false{% endif %}"
+        data-product="{{ product | json | escape }}"
+        {% if settings.limit_quantity or settings.display_inventory_left %}
+          data-variant-inventory='[{%- for v in product.variants -%}{"id":{{v.id}},"inventory_quantity":{{v.inventory_quantity}},"inventory_management":"{{v.inventory_management}}","inventory_policy":"{{v.inventory_policy}}"}{% if forloop.last == false %},{% endif %}{%- endfor -%}]'
+        {% endif %}
+        data-product-id="{{ product.id }}">
+   {% form 'product', product %}
+    {% include 'size-chart-popup' %}
+    <div class='navbar-price 55555555'>
+      <div class='navbar-under-price'>
+        <div class="row">
+          <div class="col-md-9 text11">{{ product.title }}</div>
+          <div class="col-md-3 text11" >
+        {% assign variant = product.selected_or_first_available_variant %}
+        {% if settings.enable_shopify_product_badges %}
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        {% endif %}
+        {% unless collection_handles contains 'coming-soon' %}
+        <p class="modal_price text12" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+          <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
+          <meta itemprop="seller" content="{{ shop.name | escape }}" />
+          <link itemprop="availability" href="http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}">
+          <meta itemprop="itemCondition" itemtype="http://schema.org/OfferItemCondition" content="http://schema.org/NewCondition"/>
+
+          <span class="sold_out">{% if variant.available == false %}{{ 'products.product.sold_out' | t }}{% endif %}</span>
+          <span itemprop="price" content="{{ variant.price | money_without_currency | remove: "," }}" class="{% if variant.compare_at_price > variant.price %}sale{% endif %}">
+            <span class="current_price {% if product.available == false %}hidden{% endif %}">
+              {% if variant.price > 0 %}
+              <span class="money money-color">{{ variant.price | money }}</span>
+              {% else %}
+              {{ settings.free_price_text }}
+              {% endif %}
+            </span>
+          </span>
+          <span class="was_price">
+            {% if variant.price < variant.compare_at_price and variant.available %}
+            <span class="money">{{ variant.compare_at_price | money }}</span>
+            {% endif %}
+          </span>
+        </p>
+        {% endunless %}
+      </div>
+        </div>
+      <div class="purchase-details__buttons">
+        {% if settings.cart_action == 'reload_page' %}
+        <input type="hidden" name="return_to" value="back" />
+        {% elsif settings.cart_action == 'redirect_checkout' %}
+        <input type="hidden" name="return_to" value="/checkout" />
+        {% endif %}
+
+        {% capture add_to_cart_label %}{% if collection_handles contains 'pre-order' %}{{ 'collections.general.pre_order' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endif %}{% endcapture %}
+        <button type="submit" name="add" class="button-width action_button add_to_cart {% if show_payment_button %} action_button--secondary {% endif %}" data-label={{ add_to_cart_label | json }}><span class="text add-to-cart">Tilføj til kurv</span></button>
+      </div>
+      <div class='production-time'>Production time</div>
+    </div></div>
+    {% if settings.display_inventory_left %}
+    
+      <div class="items_left">
+        {% if variant.inventory_management != blank and variant.inventory_quantity > 0 %}
+          {% capture items_left_text %}
+            {% if variant.inventory_quantity == 1 %}
+              {{ 'products.product.items_left_count.one' | t }}
+            {% else %}
+              {{ 'products.product.items_left_count.other' | t }}
+            {% endif %}
+          {% endcapture %}
+
+          <p><em>{{ variant.inventory_quantity }} {{ items_left_text }}</em></p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if product.options.size > 1 %}
+      <div class="select ">
+        <select id="product-select-{{ product.id }}{{ product-form }}{{ section.id }}{{ block.id }}" name="id" class="multi_select">
+          {% for v in product.variants %}
+            <option {% if v == variant %}selected="selected"{% endif %} value="{{ v.id }}" data-sku="{{ v.sku }}">{{ v.title }}</option>
+          {% endfor %}
+        </select>  
+    </div>
+    {% elsif product.options.size == 1 and product.variants.size > 1 or product.options.size == 1 and product.options[0] != "Title" %}
+      <div class="select ">
+        <label>{{ product.options[0] }}</label>
+        <select id="product-select-{{ product.id }}{{ product-form }}{{ section.id }}{{ block.id }}" name="id">
+          {% for v in product.variants %}
+            <option {% if v == variant %}selected="selected"{% endif %} value="{{ v.id }}" data-sku="{{ v.sku }}">{{ v.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% else %}
+      <input type="hidden" name="id" value="{{ variant.id }}" />
+    {% endif %}
+
+    {% if settings.product_form_style == "swatches" and product.variants.size > 1 or settings.product_form_style == "swatches" and product.options[0] != "Title" %}
+      <div class='lav-din'>Lav din order</div>  
+      <div class="swatch_options">
+        {% for option in product.options %}
+        	{% include 'product-swatch' with option %}
+        {% endfor %}
+      </div>
+            
+        
+        
+<!--         <div class='' style='text-align:center'>
+          <div class='lav-din'>Lav din order</div>
+          <div class='' style='padding: 30px;'>
+            <label style='padding-bottom: 16px;'>{{ product.options[0] }}</label>
+            <p style='MARGIN-TOP: 15PX;FONT-SIZE: smaller;'>VAELG MATERIALE</p>
+            <div class="colors">
+              <ul>
+                <li>
+                  <label>
+                    <input type="radio" name="color" value="black">
+                    <span class="swatch1" style="background-color:#de951059"></span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input type="radio" name="color" value="blue">
+                    <span class="swatch1" style="background-color:#7d97af59"></span>
+                  </label>
+                </li>
+
+              </ul> 
+            </div> 
+          </div>
+          <div class='' style='padding: 30px;'>
+            <label style='padding-bottom: 16px;'>GRAVERING</label>
+            <input type='radio' value='3' name ='Gravering' style='margin-right: 12px;margin-left: 12px;'>1 linje
+            <input type='radio' value='4' name ='Gravering' style='margin-right: 12px; margin-left: 12px;'>2 linje
+          </div>
+          <div class='' style='padding: 30px 55px 30px 55px;;'>
+            <p>vaelgn hvor mange linjer tekst</p>
+            <p style='padding-bottom: 16px;'> Top linje&emsp;&emsp;&emsp;6/6</p>
+            <input type='text' value='' style='background-color:#fff4f4; margin-bottom: 30px;'>
+            <p> Top linje&emsp;&emsp;&emsp;6/6</p>
+            <input type='text' value='' style='background-color:#fff4f4;'>
+
+          </div>
+          <div class='' style='padding: 30px;'>
+            <label style='padding-bottom: 16px;'>{{ product.options[1] }}</label>
+            <input type='radio' value='5' name='Kaede' style='margin-right: 12px; margin-left: 12px;'>50 cm
+            <input type='radio' value='6' name='Kaede' style='margin-right: 12px; margin-left: 12px;'>60 cm
+          </div>
+          <div class='' style='padding: 30px;'>
+            <label style='padding-bottom: 16px;'>{{ product.options[2] }}</label>
+            <input type='radio' value='7' name='Finish' style='margin-right: 12px; margin-left: 12px;'>Blank overflade
+            <input type='radio' value='8' name='Finish' style='margin-right: 12px; margin-left: 12px;'>Borstet overflade
+          </div>
+        </div> -->
+        
+        
+        
+        
+        
+
+    {% endif %}
+
+    <div class="purchase-details smart-payment-button--{{ show_payment_button }}">
+      {% if settings.display_product_quantity %}
+        <div class="purchase-details__quantity">
+          <label for="quantity">{{ 'products.product.quantity' | t }}</label>
+          <input type="number" min="1" size="2" class="quantity" name="quantity" id="quantity" value="1" {% if settings.limit_quantity and variant.inventory_management != blank and variant.inventory_policy == "deny" %}max="{{ variant.inventory_quantity }}"{% endif %} />
+        </div>
+      {% endif %}
+      <div class="purchase-details__buttons addtocart-bottom">
+        {% if settings.cart_action == 'reload_page' %}
+          <input type="hidden" name="return_to" value="back" />
+        {% elsif settings.cart_action == 'redirect_checkout' %}
+          <input type="hidden" name="return_to" value="/checkout" />
+        {% endif %}
+
+        {% capture add_to_cart_label %}{% if collection_handles contains 'pre-order' %}{{ 'collections.general.pre_order' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endif %}{% endcapture %}
+        <button type="submit" name="add" class="button-width action_button add_to_cart {% if show_payment_button %} action_button--secondary {% endif %}" data-label={{ add_to_cart_label | json }}><span class="text add-to-cart">Tilføj til kurv</span></button>
+<!--         {% if show_payment_button %}
+          {{ form | payment_button }}
+        {% endif %} -->
+      </div>
+    </div>
+  {% endform %}
+</div>
+{% endif %}
